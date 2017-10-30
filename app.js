@@ -16,7 +16,14 @@ app.get('/', function (req, res) {
 io.on('connection', function (socket) {
     socket.on('stream', function (image) {
         socket.broadcast.emit('stream', image);
+
     });
+    socket.on('mouse', mouseMsg);
+
+    function mouseMsg(data) {
+        socket.broadcast.emit('mouse', data);
+        console.log(data);
+    }
 });
 http.listen(port, function () {
     log.info('Server In Ascolto %s', port);

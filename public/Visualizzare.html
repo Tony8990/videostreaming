@@ -11,7 +11,9 @@
 <body>
 <img id="play">
 <div id="logger"></div>
+
 <script>
+
     var socket = io();
     socket.on('stream', function (image) {
         var img = document.getElementById("play");

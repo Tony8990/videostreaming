@@ -2,8 +2,9 @@
   "name": "VideoChat",
   "version": "0.0.1",
   "dependencies": {
-    "socket.io": "*",
     "express": "*",
-    "log": "*"
+    "ip": "^1.1.5",
+    "log": "*",
+    "socket.io": "*"
   }
 }

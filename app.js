@@ -2,6 +2,7 @@ var express = require("express");
 var app = new express();
 var http = require("http").Server(app);
 var io = require("socket.io")(http);
+var ip =require("ip");
 
 var Log = require('log'),
     log = new Log('debug');
@@ -21,6 +22,6 @@ io.on('connection', function (socket) {
     });
 
 });
-http.listen(port, function () {
-    log.info('Server In Ascolto %s', port);
+http.listen(port ,ip, function () {
+    log.info('Server In Ascolto %s',ip.address() , port);
 });

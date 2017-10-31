@@ -12,18 +12,14 @@ app.use(express.static(__dirname + "/public"));
 
 app.get('/', function (req, res) {
     res.redirect('index.html');
+
 });
 io.on('connection', function (socket) {
     socket.on('stream', function (image) {
         socket.broadcast.emit('stream', image);
 
     });
-    socket.on('mouse', mouseMsg);
 
-    function mouseMsg(data) {
-        socket.broadcast.emit('mouse', data);
-        console.log(data);
-    }
 });
 http.listen(port, function () {
     log.info('Server In Ascolto %s', port);

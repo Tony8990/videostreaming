@@ -3,10 +3,12 @@
   "version": "0.0.1",
   "dependencies": {
     "express": "*",
+    "http": "0.0.0",
     "https": "^1.0.0",
     "ip": "^1.1.5",
     "log": "*",
-    "socket.io": "*"
+    "socket.io": "*",
+    "websocket": "^1.0.25"
   },
   "permissions": {
     "audio-capture": {

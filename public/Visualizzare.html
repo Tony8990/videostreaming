@@ -9,17 +9,18 @@
 
 </head>
 <body>
-<img id="play">
+<img style="align-items: center;" id="play">
 <div id="logger"></div>
 
 <script>
-
     var socket = io();
-    socket.on('stream', function (image) {
-        var img = document.getElementById("play");
-        img.src = image;
-        $("#logger").text(image);
-    });
+    setInterval(function () {
+        socket.on('stream', function (image) {
+            var img = document.getElementById("play");
+            img.src = image;
+            //$("#logger").text(image);
+        });
+    },5);
 </script>
 </body>
 </html>

@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "dependencies": {
     "express": "*",
+    "https": "^1.0.0",
     "ip": "^1.1.5",
     "log": "*",
     "socket.io": "*"

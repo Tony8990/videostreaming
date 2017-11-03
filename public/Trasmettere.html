@@ -5,11 +5,11 @@
     <title>Trassmisione Video</title>
     <script src="https://code.jquery.com/jquery-3.2.1.js"
             integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="/socket.io/socket.io.js/"></script>
 </head>
 <body>
 <video src="" id="video" style="width:680px;height: 320px;" autoplay="true"></video>
-<canvas style="" id="prova"></canvas>
+<canvas style="" id="canvas"></canvas>
 <div id="logger"></div>
 
 
@@ -19,7 +19,7 @@
 
         var socket = io();
 
-        var canvas = document.getElementById("prova"),
+        var canvas = document.getElementById("canvas"),
             context = canvas.getContext("2d"),
             video = document.getElementById("video"),
             freq=10;
@@ -57,7 +57,7 @@
             //1000 =1sc
             setInterval(function () {
                 ViewVideo(video, context);
-            },freq*10);
+            },freq);
         });
 
 

@@ -1,9 +1,6 @@
-var express = require("express");
 var fs =require('fs');
-var app = new express();
 
-var http = require("http").Server(app);
-var io = require("socket.io")(http);
+//var http = require("http").Server(app);
 var Log = require('log'),
     log = new Log('debug');
 var port = process.env.PORT || 3000;
@@ -13,8 +10,11 @@ var options={
     ca:fs.readFileSync('credential/server.csr')
 
 };
+var express = require("express"),
+     app =  express(),
+    server =require('https').createServer(options,app);
+var io = require("socket.io")(server);
 
-var https =require("https").Server(options,app);
 
 
 app.use(express.static(__dirname + "/public"));
@@ -24,6 +24,7 @@ app.get('/', function (req, res) {
 
 });
 io.on('connection', function (socket) {
+
     socket.on('stream', function (image) {
         socket.broadcast.emit('stream', image);
 
@@ -31,6 +32,6 @@ io.on('connection', function (socket) {
 
 
 });
-https.listen(port, function () {
+server.listen(port, function () {
     log.info('HTTPS Server In Ascolto %s' , port);
 });

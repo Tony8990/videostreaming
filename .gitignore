@@ -1,8 +1,4 @@
 # Created by .ignore support plugin (hsz.mobi)
 .idea/inspectionProfiles/
 .idea/workspace.xml
-credential/server.crt
-credential/server.csr
-credential/server.enc.key
-credential/server.key
 node_modules/https/

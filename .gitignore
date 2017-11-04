@@ -9,3 +9,4 @@ node_modules/nan/
 node_modules/typedarray-to-buffer/
 node_modules/websocket/
 node_modules/yaeti/
+credential/

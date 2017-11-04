@@ -47,7 +47,7 @@ server.listen(port, function () {
     });*/
 var http=require('http');
 var webSocketServer = require('websocket').server;
-var webSocketPort=1337;
+var webSocketPort=process.env.PORT || 1337;
 var chat = http.createServer(function (req,res) {
     var wsServer=new webSocketServer({
         httpServer:chat

@@ -8,6 +8,7 @@ var options={
     ca:fs.readFileSync('credential/server.csr')
 
 };
+//per hostarlo su heriku bisogna togliere https come server e renderlo http
 var express = require("express"),
     app =  express(),
     server = require('https').createServer(options,app);

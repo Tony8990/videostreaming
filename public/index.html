@@ -3,24 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <title>Benvenuto Su VideoChat</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
     <style>
         * { font-family:tahoma; font-size:12px; padding:0px;margin:0px;}
         p { line-height:18px; }
-        #container { width:500px; margin-left:auto; margin-right:auto;}
+        #chat { width:500px; margin-left:auto; margin-right:auto; }
+        #video-box { width:620px; margin-left:auto; margin-right:auto;}
         #content { padding:5px; background:#ddd; border-radius:5px;
             overflow-y: scroll; border:1px solid #CCC;
-            margin-top:10px; height: 160px; }
+            margin-top:10px; margin-bottom: 10px; height: 160px; }
         #input { border-radius:2px; border:1px solid #ccc;
-            margin-top:10px; padding:5px; width:400px;  }
-        #button { width:88px;display:block;float:left;margin-top:15px; }
+            margin:10px; padding:5px; width:350px; float: right;}
+        #button { border-radius:2px; border:1px solid #ccc;
+            margin:10px; padding:5px; float: left;}
     </style>
     <script src = "/socket.io/socket.io.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
     <script>
         var socket = io();
         var input = $('#input');
         function setUsername() {
-            socket.emit('setUsername', document.getElementById('input').value);
+            if(document.getElementById('input').value!="") {
+                socket.emit('setUsername', document.getElementById('input').value);
+            }
+            else
+            {
+                alert("Write Name");
+            }
         };
         var user;
         var color;
@@ -31,29 +48,34 @@
         socket.on('userSet', function(data) {
             user = data.username;
             color = data.color;
-            document.body.innerHTML = '<div id="container"><div id="content"></div>\<div id="chat">\
-                <input type="text" id="input" value=""/>\
-                <button type = "button" name = "button" onclick = "sendMessage()">SendMessage</button>\
-                <p id="logger"></p></div>\
-                <p><a onclick="stream();"> Trasmettere Camera Web !!</a></p>\
-                <p><a onclick="view();"> Visualizzare Camera Web !!</a></p></div>\
-                <img id="play">\
+            document.body.innerHTML = '<div id="container"><div id="chat"><div id="content"></div>\
+                <input class="input" style="float: left" type="text" id="input" value=""/>\
+                <button class="btn btn-success" id="button" style="float: right" type = "button" name = "button" onclick = "sendMessage()">Send Message</button>\
+                </div>\
+                <div id="chat"><div class="bg-success" style="text-align: center; font-size: 18px;" id="logger">\
+                <button class="btn btn-primary" style="float:left;" onclick="stream();"> Stream Web Cam !!!</button>\
+                <button class="btn btn-primary" style="float:right;" onclick="view();"> View Web Cam !!!</button></div></div>\
+                <div id="video-box"><img id="play" style="margin-top: 15px;" ">\
                 <video src="" id="video" style="text-align: center" autoplay="true"></video>\
-                <canvas style="display: none;" id="canvas"></canvas>\
-                ';
+                <canvas style="display: none" id="canvas"></canvas>\
+                </div></div>';
         });
         function sendMessage() {
             var msg = document.getElementById('input').value;
-            input.innerText="";
-            if(msg) {
+            if(msg!="") {
                 socket.emit('msg', {message: msg, user: user, color: color});
+                $('#input').val("");
+            }
+            else
+            {
+                alert("Write Message");
             }
         }
 
         socket.on('newmsg', function(data) {
             if(user) {
-                $('#content').prepend('<div><b style="color: "+data.color>' +
-                    data.user + '</b> : ' + data.message + '</div>');
+                $('#content').prepend('<p><span style="color:' + data.color + '">'+
+                    data.user +'</span>'+ ' @ '+ new Date().getHours() +':' + new Date().getMinutes() +' -> ' + data.message + '</p>');
             }
         });
 
@@ -67,8 +89,8 @@
             canvas.width = 600;
             canvas.height = 400;
 
-            context.width = canvas.width;
-            context.height = canvas.height;
+            context.width = 600;
+            context.height = 400;
             function logger(msg) {
                 $("#logger").text(msg);
             }
@@ -91,7 +113,7 @@
                 navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msgGetUserMedia);
 
                 if (navigator.getUserMedia) {
-                    navigator.getUserMedia({video: true}, loadCam, loadFail);
+                    navigator.getUserMedia({video: true, audio:true}, loadCam, loadFail);
                 }
 
                 //1000 =1sc
@@ -108,19 +130,20 @@
             socket.on('stream', function (image) {
                 var img = document.getElementById("play");
                 img.src = image;
-                $("#logger").text("view in corso ...");
+                $("#logger").text("View in corso ...");
             });
         }
+
     </script>
 
 <body>
 <div id="container">
-<div id="content"></div>
 <div id="chat">
-    <button id="button" type = "button" name = "button" onclick = "setUsername()">Choose Name</button>
+    <div id="content"></div>
+    <button class="btn btn-success" id="button" type = "button" name = "button" onclick = "setUsername()">Choose Name</button>
     <input type="text" id="input"/>
+    <div class="bg-danger" id = "error-container" style="color: red; font-size: 18px; text-align: center;"></div>
 </div>
-<div id = "error-container" style="color: red; text-align: center;"></div>
 </div>
 </body>
 </html>

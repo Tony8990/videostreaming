@@ -8,7 +8,6 @@ var options={
     ca:fs.readFileSync('credential/server.csr')
 
 };
-//per hostarlo su heriku bisogna togliere https come server e renderlo http
 var express = require("express"),
     app =  express(),
     server = require('https').createServer(options,app);
@@ -30,16 +29,16 @@ io.on('connection', function(socket) {
     socket.on('setUsername', function(data) {
         console.log(data);
 
-        if(users.indexOf(data) > -1 || users==="") {
+        if(users.indexOf(data) > -1) {
             socket.emit('userExists', ' Username ' + data + ' is taken! Try some other username.');
         } else {
             users.push(data);
-            socket.emit('userSet', {username: data});
+            socket.emit('userSet', {username: data, color: colors.shift()});
         }
     });
 
-    socket.on('msg', function(data) {
-        io.sockets.emit('newmsg', data);
+    socket.on('msg', function(data,color) {
+        io.sockets.emit('newmsg', data,color);
     });
 
     socket.on('stream', function (image) {

@@ -27,6 +27,7 @@ colors.sort(function(a,b) { return Math.random() > 0.5; } );
 io.on('connection', function(socket) {
     console.log('A user connected');
     socket.on('setUsername', function(data) {
+
         console.log(data);
 
         if(users.indexOf(data) > -1) {

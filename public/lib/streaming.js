@@ -25,30 +25,34 @@ socket.on('userSet', function(data) {
                 <div id="chat"><div class="bg-success" style="text-align: center; font-size: 18px;" id="logger">\
                 <button class="btn btn-primary" style="float:left;" onclick="stream();"> Stream Web Cam !!!</button>\
                 <button class="btn btn-primary" style="float:right;" onclick="view();"> View Web Cam !!!</button></div></div>\
-                <div id="video-box"><img id="play" style="margin-top: 15px;" ">\
-                <video src="" id="video" style="text-align: center" autoplay="true"></video>\
-                <canvas style="display: none" id="canvas"></canvas>\
-                </div></div>';
+                        <div id="video-box"><img id="play" style="margin-top: 15px;" ">\
+                        <video src="" id="video" style="text-align: center" autoplay="true"></video>\
+                        <canvas style="display: none" id="canvas"></canvas>\
+                        </div></div>';
 });
 function sendMessage() {
     var msg = document.getElementById('input').value;
     if(msg!="") {
         socket.emit('msg', {message: msg, user: user, color: color});
         $('#input').val("");
+
     }
     else
     {
         alert("Write Message");
     }
+
+
 }
+
 
 socket.on('newmsg', function(data) {
     if(user) {
         $('#content').prepend('<p><span style="color:' + data.color + '">'+
             data.user +'</span>'+ ' @ '+ new Date().getHours() +':' + new Date().getMinutes() +' -> ' + data.message + '</p>');
     }
-});
 
+});
 function stream(){
     var socket = io();
 
@@ -83,7 +87,7 @@ function stream(){
         navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msgGetUserMedia);
 
         if (navigator.getUserMedia) {
-            navigator.getUserMedia({video: true, audio:true}, loadCam, loadFail);
+            navigator.getUserMedia({video: true, audio:false}, loadCam, loadFail);
         }
 
         //1000 =1sc
@@ -103,3 +107,5 @@ function view() {
         $("#logger").text("View in corso ...");
     });
 }
+
+

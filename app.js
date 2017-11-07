@@ -36,6 +36,7 @@ io.on('connection', function(socket) {
             users.push(data);
             socket.emit('userSet', {username: data, color: colors.shift()});
         }
+
     });
 
     socket.on('msg', function(data,color) {
@@ -45,6 +46,8 @@ io.on('connection', function(socket) {
     socket.on('stream', function (image) {
         socket.broadcast.emit('stream', image);
     });
+
+
 });
 
 server.listen(port, function() {

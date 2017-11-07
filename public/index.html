@@ -3,10 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <title>Benvenuto Su VideoChat</title>
-</head>
+    <style>
+        * { font-family:tahoma; font-size:12px; padding:0px;margin:0px;}
+        p { line-height:18px; }
+        #container { width:500px; margin-left:auto; margin-right:auto;}
+        #content { padding:5px; background:#ddd; border-radius:5px;
+            overflow-y: scroll; border:1px solid #CCC;
+            margin-top:10px; height: 160px; }
+        #input { border-radius:2px; border:1px solid #ccc;
+            margin-top:10px; padding:5px; width:400px;  }
+        #button { width:88px;display:block;float:left;margin-top:15px; }
+    </style>
+    <script src = "/socket.io/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+        var socket = io();
+        var input = $('#input');
+        function setUsername() {
+            socket.emit('setUsername', document.getElementById('input').value);
+        };
+        var user;
+        var color;
+
+        socket.on('userExists', function(data) {
+            document.getElementById('error-container').innerHTML = data;
+        });
+        socket.on('userSet', function(data) {
+            user = data.username;
+            color = data.color;
+            document.body.innerHTML = '<div id="container"><div id="content"></div>\<div id="chat">\
+                <input type="text" id="input" value=""/>\
+                <button type = "button" name = "button" onclick = "sendMessage()">SendMessage</button>\
+                <p id="logger"></p></div>\
+                <p><a onclick="stream();"> Trasmettere Camera Web !!</a></p>\
+                <p><a onclick="view();"> Visualizzare Camera Web !!</a></p></div>\
+                <img id="play">\
+                <video src="" id="video" style="text-align: center" autoplay="true"></video>\
+                <canvas style="display: none;" id="canvas"></canvas>\
+                ';
+        });
+        function sendMessage() {
+            var msg = document.getElementById('input').value;
+            input.innerText="";
+            if(msg) {
+                socket.emit('msg', {message: msg, user: user, color: color});
+            }
+        }
+
+        socket.on('newmsg', function(data) {
+            if(user) {
+                $('#content').prepend('<div><b style="color: "+data.color>' +
+                    data.user + '</b> : ' + data.message + '</div>');
+            }
+        });
+
+        function stream(){
+            var socket = io();
+
+            var canvas = document.getElementById("canvas"),
+                context = canvas.getContext("2d"),
+                video = document.getElementById("video"),
+                freq=0.1;
+            canvas.width = 600;
+            canvas.height = 400;
+
+            context.width = canvas.width;
+            context.height = canvas.height;
+            function logger(msg) {
+                $("#logger").text(msg);
+            }
+
+            function loadCam(stream) {
+                video.src = window.URL.createObjectURL(stream);
+                logger('Streaming in corso ...');
+
+            }
+            function loadFail(stream) {
+                logger('WebCam non Connessa Ritentare o controllare bene ');
+            }
+
+            function ViewVideo(video, context) {
+                context.drawImage(video, 0, 0, context.width, context.height);
+                socket.emit('stream', canvas.toDataURL('image/webp'));
+
+            }
+            $(function () {
+                navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msgGetUserMedia);
+
+                if (navigator.getUserMedia) {
+                    navigator.getUserMedia({video: true}, loadCam, loadFail);
+                }
+
+                //1000 =1sc
+                setInterval(function () {
+                    ViewVideo(video, context);
+                },freq);
+            });
+
+        }
+
+        function view() {
+            var socket = io();
+
+            socket.on('stream', function (image) {
+                var img = document.getElementById("play");
+                img.src = image;
+                $("#logger").text("view in corso ...");
+            });
+        }
+    </script>
+
 <body>
-<p><a href="Trasmettere.html"> Trasmettere Camara Web !!</a></p>
-<p><a href="Visualizzare.html"> Visiualizzare Camera Web !!</a></p>
-<script src="../frontend.js"></script>
+<div id="container">
+<div id="content"></div>
+<div id="chat">
+    <button id="button" type = "button" name = "button" onclick = "setUsername()">Choose Name</button>
+    <input type="text" id="input"/>
+</div>
+<div id = "error-container" style="color: red; text-align: center;"></div>
+</div>
 </body>
 </html>

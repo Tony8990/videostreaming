@@ -3,15 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <title>Trassmisione Video</title>
+    <script src = "/socket.io/socket.io.js"></script>
+
+    <script>
+        var socket = io();
+        function setUsername() {
+            socket.emit('setUsername', document.getElementById('name').value);
+        };
+        var user;
+        socket.on('userExists', function(data) {
+            document.getElementById('error-container').innerHTML = data;
+        });
+        socket.on('userSet', function(data) {
+            user = data.username;
+            document.body.innerHTML = '<input type = "text" id = "message">\
+         <button type = "button" name = "button" onclick = "sendMessage()">Send</button>\
+         <div id = "message-container"></div>';
+        });
+        function sendMessage() {
+            var msg = document.getElementById('message').value;
+            if(msg) {
+                socket.emit('msg', {message: msg, user: user});
+            }
+        }
+        socket.on('newmsg', function(data) {
+            if(user) {
+                document.getElementById('message-container').innerHTML += '<div><b>' +
+                    data.user + '</b>: ' + data.message + '</div>'
+            }
+        })
+    </script>
+
     <script src="https://code.jquery.com/jquery-3.2.1.js"
             integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
     <script type="text/javascript" src="/socket.io/socket.io.js/"></script>
 </head>
 <body>
+<p id="logger"></p>
 <video src="" id="video" style="width:680px;height: 320px;align-items: center;" autoplay="true"></video>
 <canvas style="display: none;" id="canvas"></canvas>
-<div id="logger"></div>
 
+<div id = "error-container"></div>
+<input id = "name" type = "text" name = "name" value = ""
+       placeholder = "Enter your name!">
+<button type = "button" name = "button" onclick = "setUsername()">
+    Let me chat!
+</button>
 
 <script type="text/javascript">
 
@@ -22,9 +59,9 @@
         var canvas = document.getElementById("canvas"),
             context = canvas.getContext("2d"),
             video = document.getElementById("video"),
-            freq=10;
-        canvas.width = 600;
-        canvas.height = 400;
+            freq=1;
+        canvas.width = 800;
+        canvas.height = 600;
 
         context.width = 800;
         context.height = 600;
@@ -34,7 +71,7 @@
 
         function loadCam(stream) {
             video.src = window.URL.createObjectURL(stream);
-            logger('WebCam Connessa Correttamente {[OK!!!]}');
+            logger('Streaming in corso ...');
 
         }
         function loadFail(stream) {
@@ -59,11 +96,6 @@
                 ViewVideo(video, context);
             },freq);
         });
-
-
-
-
-
 </script>
 </body>
 </html>

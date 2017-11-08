@@ -1,6 +1,7 @@
 var fs =require('fs');
 var Log = require('log'),
     log = new Log('debug');
+var ip =require('ip');
 var port = process.env.PORT || 8000;
 var options={
     key: fs.readFileSync('credential/server.key'),
@@ -25,7 +26,7 @@ var colors = [ 'red', 'green', 'blue', 'magenta', 'purple', 'plum', 'orange' ];
 colors.sort(function(a,b) { return Math.random() > 0.5; } );
 
 io.on('connection', function(socket) {
-    console.log('A user connected');
+    //console.log('A user connected');
     socket.on('setUsername', function(data) {
 
         console.log(data);
@@ -48,5 +49,5 @@ io.on('connection', function(socket) {
 });
 
 server.listen(port, function() {
-    log.info('listening on localhost: ',port);
+    log.info('listening on https://'+ip.address()+':'+port);
 });

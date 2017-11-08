@@ -45,7 +45,7 @@ function sendMessage() {
 socket.on('newmsg', function(data) {
     if(user) {
         $('#content').prepend('<p><span style="color:' + data.color + '">'+
-            data.user +'</span>'+ ' @ '+ new Date().getHours() +':' + new Date().getMinutes() +' -> ' + data.message + '</p>');
+            data.user +'</span>'+ ' @ '+ new Date().getHours() +':' + new Date().getMinutes() +' # ' + data.message + '</p>');
     }
 });
 

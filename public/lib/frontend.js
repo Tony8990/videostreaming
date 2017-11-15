@@ -1,5 +1,7 @@
 var socket = io();
-var input = $('#input');
+var user;
+var color;
+
 function setUsername() {
     if(document.getElementById('input').value!="") {
         socket.emit('setUsername', document.getElementById('input').value);
@@ -9,12 +11,11 @@ function setUsername() {
         alert("Write Name");
     }
 };
-var user;
-var color;
 
 socket.on('userExists', function(data) {
     document.getElementById('error-container').innerHTML = data;
 });
+
 socket.on('userSet', function(data) {
     user = data.username;
     color = data.color;
@@ -25,11 +26,13 @@ socket.on('userSet', function(data) {
                 <div id="chat"><div class="bg-success" style="text-align: center; font-size: 18px;" id="logger">\
                 <button class="btn btn-primary" style="float:left;" onclick="stream();"> Stream Web Cam !!!</button>\
                 <button class="btn btn-primary" style="float:right;" onclick="view();"> View Web Cam !!!</button></div></div>\
-                <div id="video-box"><img id="play" style="margin-top: 15px;" ">\
+                <div id="video-box"><img id="play" style="margin-top: 15px;" /></div>\
                 <video src="" id="video" style="text-align: center" autoplay="true"></video>\
                 <canvas style="display: none" id="canvas"></canvas>\
                 </div></div>';
 });
+
+
 function sendMessage() {
     var msg = document.getElementById('input').value;
     if(msg!="") {
@@ -83,7 +86,7 @@ function stream(){
         navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msgGetUserMedia);
 
         if (navigator.getUserMedia) {
-            navigator.getUserMedia({video: true, audio:true}, loadCam, loadFail);
+            navigator.getUserMedia({video: true}, loadCam, loadFail);
         }
 
         //1000 =1sc
